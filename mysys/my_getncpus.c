@@ -37,7 +37,11 @@ int my_getncpus(void)
   {
     if (pthread_getaffinity_np(pthread_self(), sizeof(set), &set) == 0)
     {
+#ifdef CPU_COUNT
       ncpus= CPU_COUNT(&set);
+#else
+      ncpus= 2;
+#endif
     }
     else
     {
