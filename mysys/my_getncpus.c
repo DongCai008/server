@@ -40,7 +40,13 @@ int my_getncpus(void)
 #ifdef CPU_COUNT
       ncpus= CPU_COUNT(&set);
 #else
-      ncpus= 2;
+      size_t i;
+
+      for (i = 0; i < CPU_SETSIZE; i++)
+        if (CPU_ISSET(i, &set))
+          ncpus++;
+      if (!ncpus)
+        ncpus= 2;
 #endif
     }
     else
