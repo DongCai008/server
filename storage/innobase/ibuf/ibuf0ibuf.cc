@@ -4217,7 +4217,10 @@ ibuf_merge_or_delete_for_page(
 	ulint		dops[IBUF_OP_COUNT];
 
 	ut_ad(block == NULL || page_id == block->page.id);
-	ut_ad(!block || buf_block_get_state(block) == BUF_BLOCK_FILE_PAGE);
+#if WLAD_DEBUG // innodb.ibuf_not_empty
+	ut_ad(block == NULL
+	      || buf_block_get_io_fix_unlocked(block) == BUF_IO_READ);
+#endif
 
 	if (trx_sys_hdr_page(page_id)
 	    || fsp_is_system_temporary(page_id.space())) {
